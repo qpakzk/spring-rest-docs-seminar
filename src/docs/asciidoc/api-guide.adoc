@@ -14,20 +14,26 @@ endif::[]
 
 === [Request URL]
 include::{snippets}/product-create/http-request.adoc[]
-
+include::{snippets}/product-create/request-body.adoc[]
 === [Response URL]
 include::{snippets}/product-create/http-response.adoc[]
+include::{snippets}/product-create/response-body.adoc[]
 
 == Product 전체 조회
 === [Request URL]
 include::{snippets}/product-retrieve-all/http-request.adoc[]
+include::{snippets}/product-retrieve/path-parameters.adoc[]
+include::{snippets}/product-retrieve-all/request-body.adoc[]
 
 === [Response URL]
 include::{snippets}/product-retrieve-all/http-response.adoc[]
+include::{snippets}/product-retrieve-all/response-body.adoc[]
 
 == Product 조회
 === [Request URL]
 include::{snippets}/product-retrieve/http-request.adoc[]
+include::{snippets}/product-retrieve/request-body.adoc[]
 
 === [Response URL]
 include::{snippets}/product-retrieve/http-response.adoc[]
+include::{snippets}/product-retrieve/response-body.adoc[]
