@@ -111,7 +111,14 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$[1].name", is("Tibero")))
                 .andExpect(jsonPath("$[1].description", is("A brilliant DBMS")))
                 .andExpect(jsonPath("$[1].quantity", is(20)))
-                .andDo(document("product-retrieve-all"));
+                .andDo(document("product-retrieve-all",
+                        responseFields(
+                                fieldWithPath("[].id").type(Long.class).description("상품 ID"),
+                                fieldWithPath("[].name").type(String.class).description("상품명"),
+                                fieldWithPath("[].description").type(String.class).description("상품 설명"),
+                                fieldWithPath("[].quantity").type(Integer.class).description("상품 수량")
+                        )
+                ));
     }
 
     @Test
@@ -137,6 +144,12 @@ class ProductControllerTest {
                 .andDo(document("product-retrieve",
                     pathParameters(
                             parameterWithName("id").description("상품 ID")
+                    ),
+                    responseFields(
+                            fieldWithPath("id").type(Long.class).description("상품 ID"),
+                            fieldWithPath("name").type(String.class).description("상품명"),
+                            fieldWithPath("description").type(String.class).description("상품 설명"),
+                            fieldWithPath("quantity").type(Integer.class).description("상품 수량")
                     )
                 ));
     }

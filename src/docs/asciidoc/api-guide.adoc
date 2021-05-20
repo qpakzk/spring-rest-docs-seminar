@@ -24,6 +24,7 @@ include::{snippets}/product-retrieve-all/http-request.adoc[]
 
 === [Response URL]
 include::{snippets}/product-retrieve-all/http-response.adoc[]
+include::{snippets}/product-retrieve-all/response-fields.adoc[]
 
 
 == Product 조회
@@ -33,3 +34,4 @@ include::{snippets}/product-retrieve/path-parameters.adoc[]
 
 === [Response URL]
 include::{snippets}/product-retrieve/http-response.adoc[]
+include::{snippets}/product-retrieve/response-fields.adoc[]
