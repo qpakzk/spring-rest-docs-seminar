@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### macOS
+.DS_Store
+
+### Spring Rest Docs ###
+src/main/resources/static/docs/
