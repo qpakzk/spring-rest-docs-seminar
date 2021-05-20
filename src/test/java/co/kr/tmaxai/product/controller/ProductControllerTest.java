@@ -5,6 +5,7 @@ import co.kr.tmaxai.product.dto.ProductDto;
 import co.kr.tmaxai.product.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,8 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -54,6 +54,7 @@ class ProductControllerTest {
                 .build();
     }
     @Test
+    @DisplayName("제품을 생성한다.")
     void testCreateProduct() throws Exception {
         //given
         Long id = 1L;
@@ -88,6 +89,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("모든 제품을 조회한다.")
     void testRetrieveAllProducts() throws Exception {
         //given
         Long id = 1L;
@@ -136,6 +138,7 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("제품을 조회한다.")
     void testRetrieveProduct() throws Exception {
         Long id = 1L;
         String name = "HyperChatbot";
@@ -163,11 +166,85 @@ class ProductControllerTest {
                             parameterWithName("id").description("상품 ID")
                     ),
                     responseFields(
-                            fieldWithPath("id").type(Long.class).description("상품 ID"),
                             fieldWithPath("name").type(String.class).description("상품명"),
                             fieldWithPath("description").type(String.class).description("상품 설명"),
                             fieldWithPath("quantity").type(Integer.class).description("상품 수량")
                     )
+                ));
+    }
+
+    @Test
+    @DisplayName("제품 정보를 갱신한다.")
+    void testUpdateProduct() throws Exception {
+        //given
+        Long id = 1L;
+        String name = "HyperChatbot";
+        String description = "A brilliant chatbot platform";
+        int quantity = 50;
+        Product product = Product.builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .quantity(quantity)
+                .build();
+
+        doReturn(product).when(productService).updateProduct(id, product.getName(), product.getDescription(), product.getQuantity());
+
+        //when
+        String productDtoToJsonString = objectMapper.writeValueAsString(product.toProductDto());
+        mockMvc.perform(put("/product/{id}", id)
+        .content(productDtoToJsonString)
+        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$.name", is(name)))
+                .andExpect(jsonPath("$.description", is(description)))
+                .andExpect(jsonPath("$.quantity", is(quantity)))
+                .andDo(document("product/update",
+                        pathParameters(
+                                parameterWithName("id").description("상품 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").type(String.class).description("상품명"),
+                                fieldWithPath("description").type(String.class).description("상품 설명"),
+                                fieldWithPath("quantity").type(Integer.class).description("상품 수량")
+                        ),
+                        responseFields(
+                                fieldWithPath("name").type(String.class).description("상품명"),
+                                fieldWithPath("description").type(String.class).description("상품 설명"),
+                                fieldWithPath("quantity").type(Integer.class).description("상품 수량")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("제품을 삭제한다.")
+    void testDeleteProduct() throws Exception {
+        //given
+        Long id = 1L;
+        String name = "HyperChatbot";
+        String description = "A brilliant chatbot platform";
+        int quantity = 50;
+        Product product = Product.builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .quantity(quantity)
+                .build();
+
+        doReturn(product).when(productService).deleteProduct(id);
+
+        //when
+        mockMvc.perform(post("/product/{id}", id)
+        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(jsonPath("$.id", is(id.intValue())))
+                .andDo(document("product/delete",
+                        pathParameters(
+                                parameterWithName("id").description("상품 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").type(String.class).description("상품 ID")
+                        )
                 ));
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +22,24 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Product retrieveProduct(Long productId) {
-        return productRepository.findById(productId).get();
+    public Product retrieveProduct(Long id) {
+        return productRepository.findById(id).get();
     }
 
     @Transactional(readOnly = true)
     public List<Product> retrieveAllProducts() {
         return productRepository.findAll();
+    }
+
+    public Product updateProduct(Long id, String name, String description, int quantity) {
+        Product product = productRepository.findById(id).get();
+        product.update(name, description, quantity);
+        return product;
+    }
+
+    public Product deleteProduct(Long id) {
+        Product product = productRepository.findById(id).get();
+        productRepository.delete(product);
+        return product;
     }
 }

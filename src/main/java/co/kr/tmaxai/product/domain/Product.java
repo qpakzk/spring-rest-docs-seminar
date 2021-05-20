@@ -26,10 +26,10 @@ public class Product {
 
     private int quantity;
 
-    public void update(Product product) {
-        name = product.name;
-        description = product.description;
-        quantity = product.quantity;
+    public void update(String name, String description, int quantity) {
+        this.name = name;
+        this.description = description;
+        this.quantity = quantity;
     }
 
     public ProductDto toProductDto() {
