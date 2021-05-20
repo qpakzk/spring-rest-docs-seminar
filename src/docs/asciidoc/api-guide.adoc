@@ -9,10 +9,25 @@ endif::[]
 :sectlinks:
 :site-url: /build/asciidoc/html5/
 
-== Resources
+[[resources]]
+== Product 생성
 
 === [Request URL]
 include::{snippets}/product-create/http-request.adoc[]
 
 === [Response URL]
 include::{snippets}/product-create/http-response.adoc[]
+
+== Product 전체 조회
+=== [Request URL]
+include::{snippets}/product-retrieve-all/http-request.adoc[]
+
+=== [Response URL]
+include::{snippets}/product-retrieve-all/http-response.adoc[]
+
+== Product 조회
+=== [Request URL]
+include::{snippets}/product-retrieve/http-request.adoc[]
+
+=== [Response URL]
+include::{snippets}/product-retrieve/http-response.adoc[]

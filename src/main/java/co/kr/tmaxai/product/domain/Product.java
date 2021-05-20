@@ -1,6 +1,5 @@
 package co.kr.tmaxai.product.domain;
 
-import co.kr.tmaxai.product.dto.ProductDto;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -9,6 +8,7 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,18 +23,9 @@ public class Product {
 
     private int quantity;
 
-    public ProductDto toProductDto() {
-        return ProductDto.builder()
-                .name(name)
-                .description(description)
-                .quantity(quantity)
-                .build();
-    }
-
-    public void update(ProductDto productDto) {
-        Product newProduct = productDto.toProduct();
-        name = newProduct.name;
-        description = newProduct.description;
-        quantity = newProduct.quantity;
+    public void update(Product product) {
+        name = product.name;
+        description = product.description;
+        quantity = product.quantity;
     }
 }
