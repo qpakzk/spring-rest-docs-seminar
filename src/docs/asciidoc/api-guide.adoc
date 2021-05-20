@@ -11,27 +11,27 @@ endif::[]
 
 == Product 생성
 === [Request URL]
-include::{snippets}/product-create/http-request.adoc[]
-include::{snippets}/product-create/request-fields.adoc[]
+include::{snippets}/product/create/http-request.adoc[]
+include::{snippets}/product/create/request-fields.adoc[]
 
 === [Response URL]
-include::{snippets}/product-create/http-response.adoc[]
+include::{snippets}/product/create/http-response.adoc[]
 
 
 == Product 전체 조회
 === [Request URL]
-include::{snippets}/product-retrieve-all/http-request.adoc[]
+include::{snippets}/product/retrieve-all/http-request.adoc[]
 
 === [Response URL]
-include::{snippets}/product-retrieve-all/http-response.adoc[]
-include::{snippets}/product-retrieve-all/response-fields.adoc[]
+include::{snippets}/product/retrieve-all/http-response.adoc[]
+include::{snippets}/product/retrieve-all/response-fields.adoc[]
 
 
 == Product 조회
 === [Request URL]
-include::{snippets}/product-retrieve/http-request.adoc[]
-include::{snippets}/product-retrieve/path-parameters.adoc[]
+include::{snippets}/product/retrieve/http-request.adoc[]
+include::{snippets}/product/retrieve/path-parameters.adoc[]
 
 === [Response URL]
-include::{snippets}/product-retrieve/http-response.adoc[]
-include::{snippets}/product-retrieve/response-fields.adoc[]
+include::{snippets}/product/retrieve/http-response.adoc[]
+include::{snippets}/product/retrieve/response-fields.adoc[]

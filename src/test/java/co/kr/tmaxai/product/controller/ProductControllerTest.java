@@ -1,6 +1,7 @@
 package co.kr.tmaxai.product.controller;
 
 import co.kr.tmaxai.product.domain.Product;
+import co.kr.tmaxai.product.dto.ProductDto;
 import co.kr.tmaxai.product.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -25,10 +25,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,10 +43,11 @@ class ProductControllerTest {
     @MockBean
     private ProductService productService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    public void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+    public void setup(WebApplicationContext webApplicationContext,
+                      RestDocumentationContextProvider restDocumentation) {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilter(new ShallowEtagHeaderFilter())
                 .apply(documentationConfiguration(restDocumentation))
@@ -54,66 +56,78 @@ class ProductControllerTest {
     @Test
     void testCreateProduct() throws Exception {
         //given
-        Product product = Product.builder()
-                .id(1L)
-                .name("HyperChatbot")
-                .description("A brilliant chatbot platform")
-                .quantity(10)
+        Long id = 1L;
+        String name = "HyperChatbot";
+        String description = "A brilliant chatbot platform";
+        int quantity = 10;
+        ProductDto productDto = ProductDto.builder()
+                .name(name)
+                .description(description)
+                .quantity(quantity)
                 .build();
 
-        doReturn(1L).when(productService).createProduct(any());
+        doReturn(id).when(productService).createProduct(any(Product.class));
 
         //when
         //then
-        String productDtoToJsonString = objectMapper.writeValueAsString(product);
-        mockMvc.perform(post("/").content(productDtoToJsonString)
+        String productDtoToJsonString = objectMapper.writeValueAsString(productDto);
+        mockMvc.perform(post("/product/new").content(productDtoToJsonString)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("product-create",
+                .andExpect(jsonPath("id", is(id.intValue())))
+                .andDo(document("product/create",
                 requestFields(
-                        fieldWithPath("id").type(Long.class).description("상품 ID"),
                         fieldWithPath("name").type(String.class).description("상품명"),
                         fieldWithPath("description").type(String.class).description("상품 설명"),
                         fieldWithPath("quantity").type(Integer.class).description("상품 수량")
+                ),
+                responseFields(
+                        fieldWithPath("id").type(Long.class).description("상품 ID")
                 )));
     }
 
     @Test
     void testRetrieveAllProducts() throws Exception {
         //given
-        Product product1 = Product.builder()
-                .id(1L)
-                .name("HyperChatbot")
-                .description("A brilliant chatbot platform")
-                .quantity(10)
-                .build();
-        Product productDto2 = Product.builder()
-                .id(2L)
-                .name("Tibero")
-                .description("A brilliant DBMS")
-                .quantity(20)
+        Long id = 1L;
+        String name = "HyperChatbot";
+        String description = "A brilliant chatbot platform";
+        int quantity = 10;
+        Product product = Product.builder()
+                .id(id)
+                .name(name)
+                .description(description)
+                .quantity(quantity)
                 .build();
 
-        List<Product> products = Arrays.asList(product1, productDto2);
+        Long id2 = 2L;
+        String name2 = "Tibero";
+        String description2 = "A brilliant DBMS";
+        int quantity2 = 20;
+        Product product2 = Product.builder()
+                .id(id2)
+                .name(name2)
+                .description(description2)
+                .quantity(quantity2)
+                .build();
+
+        List<Product> products = Arrays.asList(product, product2);
         doReturn(products).when(productService).retrieveAllProducts();
 
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/"))
+        mockMvc.perform(get("/products"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("HyperChatbot")))
-                .andExpect(jsonPath("$[0].description", is("A brilliant chatbot platform")))
-                .andExpect(jsonPath("$[0].quantity", is(10)))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].name", is("Tibero")))
-                .andExpect(jsonPath("$[1].description", is("A brilliant DBMS")))
-                .andExpect(jsonPath("$[1].quantity", is(20)))
-                .andDo(document("product-retrieve-all",
+                .andExpect(jsonPath("$[0].name", is(name)))
+                .andExpect(jsonPath("$[0].description", is(description)))
+                .andExpect(jsonPath("$[0].quantity", is(quantity)))
+                .andExpect(jsonPath("$[1].name", is(name2)))
+                .andExpect(jsonPath("$[1].description", is(description2)))
+                .andExpect(jsonPath("$[1].quantity", is(quantity2)))
+                .andDo(document("product/retrieve-all",
                         responseFields(
-                                fieldWithPath("[].id").type(Long.class).description("상품 ID"),
                                 fieldWithPath("[].name").type(String.class).description("상품명"),
                                 fieldWithPath("[].description").type(String.class).description("상품 설명"),
                                 fieldWithPath("[].quantity").type(Integer.class).description("상품 수량")
@@ -123,25 +137,28 @@ class ProductControllerTest {
 
     @Test
     void testRetrieveProduct() throws Exception {
+        Long id = 1L;
+        String name = "HyperChatbot";
+        String description = "A brilliant chatbot platform";
+        int quantity = 10;
         Product product = Product.builder()
-                .id(1L)
-                .name("HyperChatbot")
-                .description("A brilliant chatbot platform")
-                .quantity(10)
+                .id(id)
+                .name(name)
+                .description(description)
+                .quantity(quantity)
                 .build();
 
-        doReturn(product).when(productService).retrieveProduct(1L);
+        doReturn(product).when(productService).retrieveProduct(id);
 
         //when
         //then
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/{id}", 1L))
+        mockMvc.perform(get("/product/{id}", id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("HyperChatbot")))
-                .andExpect(jsonPath("$.description", is("A brilliant chatbot platform")))
-                .andExpect(jsonPath("$.quantity", is(10)))
-                .andDo(document("product-retrieve",
+                .andExpect(jsonPath("$.name", is(name)))
+                .andExpect(jsonPath("$.description", is(description)))
+                .andExpect(jsonPath("$.quantity", is(quantity)))
+                .andDo(document("product/retrieve",
                     pathParameters(
                             parameterWithName("id").description("상품 ID")
                     ),
