@@ -25,8 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,7 +47,7 @@ class ProductControllerTest {
     @BeforeEach
     public void setup(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-//                .addFilter(new ShallowEtagHeaderFilter())
+                .addFilter(new ShallowEtagHeaderFilter())
                 .apply(documentationConfiguration(restDocumentation))
                 .build();
     }
